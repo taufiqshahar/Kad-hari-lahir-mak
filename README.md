@@ -8,7 +8,8 @@ style.css    – design tokens, layout, animations, responsive and reduced-motio
 script.js    – envelope opening, effects canvas, gallery lightbox, music, sharing, replay
 assets/
   birthday-music.mp3   ← add your own (see below)
-  images/photo-01.jpg … photo-08.jpg   family photos
+  images/photo-01.jpg … photo-08.jpg   family photos (originals, unchanged)
+  images/thumbs/photo-0X.webp          lightweight gallery thumbnails
   flowers/             real flower photos (corner, garland, bouquet, falling petals) + CREDITS.md
 ```
 
@@ -26,7 +27,7 @@ There is **no music file in the repo yet**. Put any MP3 at `assets/birthday-musi
 
 ## Photos
 
-To change a photo, replace `assets/images/photo-0X.jpg` and keep the same filename. If a photo is missing, the card shows a numbered placeholder instead of a broken image. To change how a photo is cropped in its frame, edit the `--pos` value on its `<img>` (for example `--pos: 50% 40%`). Captions are in the `data-caption` and `aria-label` attributes on each `.photo` button.
+To change a photo, replace `assets/images/photo-0X.jpg` (shown full size when tapped) and regenerate its gallery thumbnail `assets/images/thumbs/photo-0X.webp` (shorter side 600px, WebP). The gallery shows the thumbnails so that scrolling stays smooth on phones. If a photo is missing, the card shows a numbered placeholder instead of a broken image. To change how a photo is cropped in its frame, edit the `--pos` value on its `<img>` (for example `--pos: 50% 40%`).
 
 ## Flowers
 
