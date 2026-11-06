@@ -7,7 +7,7 @@ index.html   – structure, content, inline SVG Islamic ornaments (stars, cresce
 style.css    – design tokens, layout, animations, responsive and reduced-motion rules
 script.js    – envelope opening, effects canvas, gallery lightbox, music, sharing, replay
 assets/
-  birthday-music.mp3   ← add your own (see below)
+  birthday-music.mp3   instrumental Happy Birthday (see Music below)
   images/photo-01.jpg … photo-08.jpg   family photos (originals, unchanged)
   images/thumbs/photo-0X.webp          lightweight gallery thumbnails
   flowers/             real flower photos (corner, garland, bouquet, falling petals) + CREDITS.md
@@ -23,7 +23,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 ## Music
 
-There is **no music file in the repo yet**. Put any MP3 at `assets/birthday-music.mp3` and the music button appears on its own. Music never autoplays. It starts only when someone taps the button. While the file is missing, the button stays hidden so nothing looks broken.
+`assets/birthday-music.mp3` is an instrumental arrangement of *Happy Birthday* (the melody is in the public domain) for harp, celesta, piano, strings and music box. It was rendered with the FluidR3_GM soundfont (MIT licence) and loops on the card. Music never autoplays: it starts only when someone taps the music button. To use a different song, replace the file and keep the same name. If the file is missing, the button stays hidden so nothing looks broken.
 
 ## Photos
 
