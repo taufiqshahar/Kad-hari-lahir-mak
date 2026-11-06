@@ -35,6 +35,6 @@ The flowers are real photographs from Wikimedia Commons. Their backgrounds were 
 ## Deploy (e.g. GitHub Pages)
 
 1. Settings → Pages → Deploy from branch → choose the branch, `/ (root)`.
-2. After it is live, change `og:image` in `index.html` to the full URL, e.g. `https://<user>.github.io/<repo>/assets/images/photo-08.jpg`. WhatsApp only shows the photo preview when this is a full URL.
+2. The link-preview tags (`og:url`, `og:image`) already point at `https://taufiqshahar.github.io/Kad-hari-lahir-mak/`. If the card is hosted at a different address, update both tags. WhatsApp only shows the preview photo when the URL is a full URL.
 
 **Privacy:** a public repo or Pages site makes these family photos public. The page has `noindex` so search engines skip it, but anyone with the link can still open it.
