@@ -402,7 +402,7 @@
      Music — hanya bermula selepas klik. Fail hilang tidak merosakkan laman.
      ------------------------------------------------------------------------ */
   function createMusic(audio, button, toast) {
-    if (!audio || !button) return { pause() {} };
+    if (!audio || !button) return { play() {}, pause() {} };
 
     let unavailable = false;
     audio.volume = CONFIG.musicVolume;
@@ -430,20 +430,37 @@
     audio.addEventListener('ended', () => render(false));
     if (audio.error) markUnavailable();
 
-    button.addEventListener('click', async () => {
+    // Naikkan kelantangan perlahan-lahan (iOS mengabaikan audio.volume; tiada kesan buruk di sana)
+    let fadeTimer = 0;
+    const fadeIn = () => {
+      window.clearInterval(fadeTimer);
+      audio.volume = 0;
+      fadeTimer = window.setInterval(() => {
+        audio.volume = Math.min(CONFIG.musicVolume, audio.volume + CONFIG.musicVolume / 20);
+        if (audio.volume >= CONFIG.musicVolume) window.clearInterval(fadeTimer);
+      }, 75);
+    };
+
+    /**
+     * Mainkan muzik. MESTI dipanggil terus dalam pengendali klik pengguna (sebelum sebarang await),
+     * supaya pelayar (terutama Safari iPhone) membenarkannya.
+     * quiet: jangan tunjuk mesej ralat (digunakan bila muzik dimulakan oleh butang "Buka Kad Istimewa").
+     */
+    const play = async ({ quiet = false, fade = false } = {}) => {
       if (unavailable) {
-        toast.show('Maaf, fail muzik belum ditambah.');
+        if (!quiet) toast.show('Maaf, fail muzik belum ditambah.');
         return;
       }
-      if (!audio.paused) {
-        audio.pause();
-        return;
-      }
+      if (!audio.paused) return;
       button.classList.add('is-loading');
+      if (fade) fadeIn(); else audio.volume = CONFIG.musicVolume;
       try {
         await audio.play();
       } catch (error) {
         button.classList.remove('is-loading');
+        window.clearInterval(fadeTimer);
+        audio.volume = CONFIG.musicVolume;
+        if (quiet) return; // butang muzik masih ada untuk cuba sendiri
         if (error && error.name === 'NotAllowedError') {
           toast.show('Ketik butang muzik sekali lagi untuk memainkan lagu.');
         } else if (!unavailable) {
@@ -451,10 +468,18 @@
           toast.show('Maaf, muzik tidak dapat dimainkan.');
         }
       }
+    };
+
+    button.addEventListener('click', () => {
+      if (!audio.paused) {
+        audio.pause();
+        return;
+      }
+      play();
     });
 
     render(false);
-    return { pause: () => audio.pause() };
+    return { play, pause: () => audio.pause() };
   }
 
   /* ------------------------------------------------------------------------
@@ -679,7 +704,7 @@
   /* ------------------------------------------------------------------------
      Experience — buka sampul → sambutan → kad; ulang semula
      ------------------------------------------------------------------------ */
-  function createExperience({ intro, envelope, openButton, replayButton, greetingTitle, finale, effects, reveal, gallery }) {
+  function createExperience({ intro, envelope, openButton, replayButton, greetingTitle, finale, effects, reveal, gallery, music }) {
     let state = 'sealed'; // sealed | opening | open
     let finaleCelebrated = false;
 
@@ -697,6 +722,8 @@
     const open = async () => {
       if (state !== 'sealed') return;
       state = 'opening';
+      // Muzik bermula serentak dengan klik "Buka Kad Istimewa" (mesti sebelum sebarang await)
+      if (music) music.play({ quiet: true, fade: true });
       openButton.disabled = true;
       openButton.setAttribute('aria-busy', 'true');
       effects.stopAmbient();
@@ -764,7 +791,7 @@
     const toast = createToast($('#toast'));
     const effects = createEffects($('#fxCanvas'));
     const reveal = createReveal($$('.reveal'));
-    createMusic($('#bgMusic'), $('#musicToggle'), toast);
+    const music = createMusic($('#bgMusic'), $('#musicToggle'), toast);
     const gallery = createGallery($$('.photo'), $('#lightbox'), toast);
     initShare($('#shareWhatsApp'));
 
@@ -784,6 +811,7 @@
         effects,
         reveal,
         gallery,
+        music,
       });
     }
 

@@ -23,7 +23,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 ## Music
 
-`assets/birthday-music.mp3` is an instrumental arrangement of *Happy Birthday* (the melody is in the public domain) for harp, celesta, piano, strings and music box. It was rendered with the FluidR3_GM soundfont (MIT licence) and loops on the card. Music never autoplays: it starts only when someone taps the music button. To use a different song, replace the file and keep the same name. If the file is missing, the button stays hidden so nothing looks broken.
+`assets/birthday-music.mp3` is an instrumental arrangement of *Happy Birthday* (the melody is in the public domain) for harp, celesta, piano, strings and music box. It was rendered with the FluidR3_GM soundfont (MIT licence) and loops on the card. Music never plays when the page loads. It starts (with a gentle fade-in) when Mak taps **Buka Kad Istimewa** or the music button, and the music button can pause it at any time. To use a different song, replace the file and keep the same name. If the file is missing, the button stays hidden so nothing looks broken.
 
 ## Photos
 
