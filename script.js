@@ -124,12 +124,19 @@
       })
     );
 
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = (force = false) => {
+      // 1.5x sudah cukup tajam untuk kelopak & konfeti, dan jauh lebih ringan di telefon
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // Bar alamat telefon muncul/hilang semasa menatal mengubah tinggi sedikit:
+      // jangan bina semula kanvas untuk itu (punca utama tatalan tersekat-sekat).
+      const sameWidth = window.innerWidth === width;
+      if (!force && sameWidth && Math.abs(window.innerHeight - height) < 160) return;
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;   // saiz tetap: elak kelopak "teregang" bila bar alamat berubah
+      canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
@@ -257,7 +264,7 @@
 
       if (ambient) {
         ambientClock += dt;
-        const interval = width < 600 ? 0.75 : 0.5;
+        const interval = width < 600 ? 1.1 : 0.6;
         while (ambientClock > interval) {
           ambientClock -= interval;
           spawnPetal(random(-20, width + 20), -30);
@@ -301,7 +308,7 @@
       else if (particles.length || ambient) start();
     });
 
-    resize();
+    resize(true);
 
     const enabled = () => !prefersReducedMotion();
 
@@ -459,9 +466,9 @@
       return {
         button,
         img,
-        src: img ? img.getAttribute('src') : '',
+        // Thumbnail ringan dalam galeri; foto asal (resolusi penuh) hanya dalam lightbox
+        src: img ? (img.dataset.full || img.getAttribute('src')) : '',
         alt: img ? img.alt : '',
-        caption: button.dataset.caption || '',
         number: index + 1,
         missing: !img,
       };
@@ -492,7 +499,6 @@
     const placeholder = $('#lightboxPlaceholder', dialog);
     const placeholderNum = $('#lightboxPlaceholderNum', dialog);
     const counter = $('#lightboxCounter', dialog);
-    const caption = $('#lightboxCaption', dialog);
     const total = items.length;
 
     let current = 0;
@@ -515,7 +521,6 @@
       current = (index + total) % total;
       const item = items[current];
       counter.textContent = `Foto ${item.number} dari ${total}`;
-      caption.textContent = item.caption;
 
       if (item.missing || !item.src) {
         imgEl.hidden = true;
@@ -607,7 +612,7 @@
         return;
       }
       // Klik pada ruang kosong (bukan foto) menutup paparan
-      if (!event.target.closest('.lightbox__img, .lightbox__placeholder, .lightbox__caption, .lightbox__counter')) close();
+      if (!event.target.closest('.lightbox__img, .lightbox__placeholder, .lightbox__counter')) close();
     });
 
     dialog.addEventListener('keydown', (event) => {
@@ -780,6 +785,14 @@
         reveal,
         gallery,
       });
+    }
+
+    // Jeda animasi (tanglung, kilauan butang) di seksyen yang tidak kelihatan: jimat CPU semasa menatal
+    if ('IntersectionObserver' in window) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
+      }, { rootMargin: '100px 0px' });
+      $$('.intro, .section').forEach((section) => sectionObserver.observe(section));
     }
 
     // Matikan kesan berterusan jika pengguna menukar tetapan pergerakan
