@@ -1,14 +1,15 @@
 # Kad Hari Lahir Mak — Islamic Floral Elegance
 
-A digital birthday card for Mak (6 November 2026). Built with HTML5, CSS3 and vanilla JavaScript only, with no frameworks or build step.
+A digital birthday card for Mak from Taufiq (6 November 2026). Built with HTML5, CSS3 and vanilla JavaScript only, with no frameworks or build step.
 
 ```
-index.html   – structure, content, inline SVG artwork (flowers, lanterns, Islamic ornaments)
+index.html   – structure, content, inline SVG Islamic ornaments (stars, crescent, lanterns)
 style.css    – design tokens, layout, animations, responsive and reduced-motion rules
 script.js    – envelope opening, effects canvas, gallery lightbox, music, sharing, replay
 assets/
   birthday-music.mp3   ← add your own (see below)
-  images/photo-01.jpg … photo-08.jpg
+  images/photo-01.jpg … photo-08.jpg   family photos
+  flowers/             real flower photos (corner, garland, bouquet, falling petals) + CREDITS.md
 ```
 
 ## Run locally
@@ -26,6 +27,10 @@ There is **no music file in the repo yet**. Put any MP3 at `assets/birthday-musi
 ## Photos
 
 To change a photo, replace `assets/images/photo-0X.jpg` and keep the same filename. If a photo is missing, the card shows a numbered placeholder instead of a broken image. To change how a photo is cropped in its frame, edit the `--pos` value on its `<img>` (for example `--pos: 50% 40%`). Captions are in the `data-caption` and `aria-label` attributes on each `.photo` button.
+
+## Flowers
+
+The flowers are real photographs from Wikimedia Commons. Their backgrounds were removed, the colours were softened to the card's dusty-rose palette, and they were arranged into `assets/flowers/*.webp`. Those photos are licensed CC BY-SA, so the credits in `assets/flowers/CREDITS.md`, and the small "Kredit foto bunga" link at the bottom of the card, must stay.
 
 ## Deploy (e.g. GitHub Pages)
 

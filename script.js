@@ -93,6 +93,22 @@
       })
     );
 
+    // Kelopak bunga sebenar (foto) — lembaran sprite mendatar, setiap sel segi empat sama.
+    // Jika gagal dimuatkan, kelopak lukisan di atas kekal sebagai sandaran.
+    const realPetals = new Image();
+    realPetals.decoding = 'async';
+    realPetals.addEventListener('load', () => {
+      const cell = realPetals.naturalHeight;
+      const count = Math.floor(realPetals.naturalWidth / cell);
+      if (!cell || !count) return;
+      const sprites = [];
+      for (let i = 0; i < count; i += 1) {
+        sprites.push(makeSprite(cell, (g) => g.drawImage(realPetals, i * cell, 0, cell, cell, -cell / 2, -cell / 2, cell, cell)));
+      }
+      petalSprites.splice(0, petalSprites.length, ...sprites);
+    }, { once: true });
+    if (!prefersReducedMotion()) realPetals.src = 'assets/flowers/petals.webp';
+
     const heartSprites = HEART_COLOURS.map((colour) =>
       makeSprite(64, (g) => {
         g.beginPath();
